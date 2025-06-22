@@ -3,36 +3,34 @@
 ## Phase 1: Project Setup & Foundation
 
 ### 1.1 Create Xcode Project
-- [ ] Create new iOS app project named "ImageCompressor"
-- [ ] Set bundle identifier: com.{your-domain}.imagecompressor
-- [ ] Configure minimum deployment target: iOS 15.0
-- [ ] Select SwiftUI interface
-- [ ] Enable Core Data (for future compression history)
+- [x] Create new iOS app project named "Ziply" (name changed from original plan)
+- [x] Set bundle identifier: com.theopendiaries.Ziply
+- [x] Configure minimum deployment target: iOS 15.0
+- [x] Select SwiftUI interface
+- [x] Enable Core Data (removed after creation as not needed)
 - [ ] Configure app icon and launch screen
 
 ### 1.2 Configure Project Structure
-- [ ] Create folder structure:
+- [x] Create folder structure:
   ```
-  ImageCompressor/
+  Ziply/
   ├── App/
-  ├── Core/
-  │   ├── Models/
-  │   ├── Services/
-  │   └── Utilities/
-  ├── Features/
+  ├── Services/
+  ├── Views/
   │   ├── Onboarding/
   │   ├── PhotoSelection/
   │   ├── Compression/
   │   └── Settings/
-  └── Resources/
+  ├── ViewModels/
+  └── Models/
   ```
 - [ ] Add .swiftlint.yml for code consistency
 - [ ] Configure build schemes for Debug/Release
 
 ### 1.3 Add Required Permissions
-- [ ] Add to Info.plist:
-  - NSPhotoLibraryUsageDescription: "Compress needs access to your photo library to compress your photos and help you save storage space"
-  - NSPhotoLibraryAddUsageDescription: "Compress needs permission to save compressed photos back to your library"
+- [x] Add to Info.plist:
+  - NSPhotoLibraryUsageDescription: "Ziply needs access to your photo library to compress your photos and help you save storage space"
+  - NSPhotoLibraryAddUsageDescription: "Ziply needs permission to save compressed photos back to your library"
 
 ### 1.4 Setup Dependencies
 - [ ] Initialize Swift Package Manager
@@ -43,22 +41,24 @@
 ## Phase 2: Core Services Implementation
 
 ### 2.1 Photo Library Service
-- [ ] Create `PhotoLibraryService.swift`
-- [ ] Implement permission checking:
+- [x] Create `PhotoLibraryService.swift`
+- [x] Implement permission checking:
   ```swift
-  func checkPhotoLibraryPermission() -> PHAuthorizationStatus
-  func requestPhotoLibraryPermission() async -> Bool
+  func checkAuthorizationStatus() -> PHAuthorizationStatus
+  func requestAuthorization() async -> Bool
   ```
-- [ ] Implement photo fetching:
+- [x] Implement photo fetching:
   ```swift
-  func fetchPhotos(dateRange: DateInterval, minimumSize: Int) -> PHFetchResult<PHAsset>
+  func fetchPhotos(dateRange: DateInterval, minimumSize: Int64) async -> [PHAsset]
   func calculateTotalSize(for assets: [PHAsset]) async -> Int64
   ```
-- [ ] Add album fetching capabilities:
+- [x] Add album fetching capabilities:
   ```swift
   func fetchAlbums() -> [PHAssetCollection]
-  func createCompressedAlbum(name: String) -> PHAssetCollection?
+  func createAlbum(name: String) async -> PHAssetCollection?
   ```
+- [x] Add image loading functionality
+- [x] Add size formatting and estimation utilities
 
 ### 2.2 Image Compression Service
 - [ ] Create `CompressionService.swift`
@@ -88,104 +88,102 @@
   ```
 
 ### 2.4 Storage Calculator Service
-- [ ] Create `StorageCalculatorService.swift`
-- [ ] Implement size calculations:
-  ```swift
-  func formatBytes(_ bytes: Int64) -> String
-  func calculateSpaceSavings(original: Int64, compressed: Int64) -> (saved: Int64, percentage: Int)
-  ```
+- [x] Integrated into PhotoLibraryService:
+  - `formatBytes(_ bytes: Int64) -> String`
+  - `estimateCompressedSize(_ originalSize: Int64, compressionRatio: Double) -> Int64`
 
 ## Phase 3: UI Implementation
 
 ### 3.1 App Structure & Navigation
-- [ ] Create `ImageCompressorApp.swift` with tab-based navigation
-- [ ] Implement `ContentView.swift` with bottom tab bar (Compress, Settings)
-- [ ] Setup navigation state management
+- [x] Create `ZiplyApp.swift` with navigation flow
+- [x] Implement MainTabView for navigation
+- [x] Setup AppState for state management
 
 ### 3.2 Onboarding Flow (Screen 1)
-- [ ] Create `OnboardingView.swift`
-- [ ] Implement welcome screen with:
+- [x] Create `OnboardingView.swift`
+- [x] Implement welcome screen with:
   - App icon animation (star wand)
   - Welcome text
   - Permission request card
   - "Grant Photo Access" button
-- [ ] Handle permission flow:
+- [x] Handle permission flow:
   - Check existing permissions
   - Request if needed
   - Navigate to main app on success
-  - Show settings redirect if denied
+  - Handle denied case
 
 ### 3.3 Photo Selection Screen (Screen 2)
-- [ ] Create `PhotoSelectionView.swift`
-- [ ] Create `PhotoSelectionViewModel.swift` with:
+- [x] Create `PhotoSelectionView.swift`
+- [x] Create `PhotoSelectionViewModel.swift` with:
   ```swift
   @Published var selectedDateRange: DateRangeOption = .lastMonth
   @Published var minimumPhotoSize: Float = 2.5 // MB
   @Published var isSearching: Bool = false
   ```
-- [ ] Implement date range selector:
+- [x] Implement date range selector:
   - Last Week, Last Month, Last 3 Months buttons
-  - Custom date range picker
-- [ ] Implement size slider:
+  - [x] Custom date range picker (NEW - added with date pickers)
+- [x] Implement size slider:
   - Range: 100 KB to 5 MB
   - Show current value in orange badge
-- [ ] Add "Find Photos to Compress" button with loading state
+- [x] Add "Find Photos to Compress" button with loading state
 
 ### 3.4 Preview Results Screen (Screen 3)
-- [ ] Create `PreviewResultsView.swift`
-- [ ] Display photo statistics:
+- [x] Create `PreviewResultsView.swift`
+- [x] Display photo statistics:
   - Photo count in blue square
   - Total size
   - Applied filters summary
-- [ ] Implement space savings estimation:
-  - Estimated space savings in GB
+- [x] Implement space savings estimation:
+  - Estimated space savings
   - Percentage reduction
-- [ ] Add "Start Compression" CTA (implied, not shown but needed)
+- [x] Add "Start Compression" CTA
 
 ### 3.5 Compression Progress Screen (Screen 4)
-- [ ] Create `CompressionProgressView.swift`
-- [ ] Implement circular progress indicator:
+- [x] Create `CompressionProgressView.swift`
+- [x] Implement circular progress indicator:
   - Animated progress ring
   - Percentage text
   - "Compressing" label
-- [ ] Display real-time statistics:
+- [x] Display real-time statistics:
   - Photos processed counter
   - Space freed
   - Time remaining
   - Average quality retained
   - Error count
 - [ ] Add cancel functionality
-- [ ] Implement background task registration
+- [ ] Implement actual compression logic
 
 ### 3.6 Results Screen (Screen 5)
-- [ ] Create `CompressionResultsView.swift`
-- [ ] Display success animation (checkmark)
-- [ ] Show compression statistics:
+- [x] Create `CompressionResultsView.swift`
+- [x] Display success animation (checkmark)
+- [x] Show compression statistics:
   - Total space saved (prominent green card)
   - Photos compressed
   - Size reduction percentage
   - Quality retained
   - Time taken
-- [ ] Add action buttons:
-  - "View Details" (navigate to photo comparison)
-  - "Compress More" (return to selection)
+- [x] Add action buttons:
+  - "View Details" 
+  - "Compress More"
 
 ### 3.7 Settings Screen
-- [ ] Create `SettingsView.swift`
-- [ ] Add placeholder content:
+- [x] Create `SettingsView.swift`
+- [x] Add placeholder content:
   - App version number
   - "Settings coming soon" message
-- [ ] Prepare structure for future settings
 
 ## Phase 4: View Models & State Management
 
 ### 4.1 Photo Selection View Model
-- [ ] Implement photo fetching based on filters
-- [ ] Calculate total size asynchronously
-- [ ] Handle loading states
-- [ ] Estimate compression savings
+- [x] Implement photo fetching based on filters
+- [x] Calculate total size asynchronously
+- [x] Handle loading states
+- [x] Estimate compression savings
+- [x] Support custom date ranges with DateInterval
 
 ### 4.2 Compression View Model
+- [x] Create basic structure
 - [ ] Implement compression queue management
 - [ ] Track progress for each photo
 - [ ] Handle errors gracefully
@@ -193,11 +191,13 @@
 - [ ] Support cancellation
 
 ### 4.3 App State Manager
-- [ ] Create central state management for:
-  - Permission status
+- [x] Create central state management (AppState.swift) for:
+  - PhotoSelectionViewModel sharing
+  - Navigation state
+- [ ] Add:
+  - Permission status tracking
   - Current compression session
   - User preferences
-  - Navigation state
 
 ## Phase 5: Core Features Implementation
 
@@ -224,9 +224,9 @@
 ## Phase 6: Polish & Optimization
 
 ### 6.1 UI Polish
-- [ ] Add loading animations
+- [x] Add loading animations (basic)
 - [ ] Implement haptic feedback
-- [ ] Add transition animations
+- [x] Add transition animations (basic)
 - [ ] Ensure dark mode support
 - [ ] Test Dynamic Type support
 
@@ -237,7 +237,7 @@
 - [ ] Profile and optimize compression algorithm
 
 ### 6.3 Error Handling
-- [ ] Handle permission denials gracefully
+- [x] Handle permission denials gracefully (basic)
 - [ ] Manage compression failures
 - [ ] Handle storage full scenarios
 - [ ] Add retry mechanisms
@@ -281,6 +281,24 @@
 - [ ] Check for memory leaks
 - [ ] Validate on multiple devices
 
+## NEW: Additional Tasks Based on Current Progress
+
+### UI Components Refactoring
+- [x] Create DateRangeSelectionView component
+- [x] Create CustomDateRangeView component
+- [x] Create MinimumSizeSelectionView component
+- [x] Modularize PhotoSelectionView for better compilation
+
+### iOS 15 Compatibility
+- [x] Replace NavigationStack with NavigationView
+- [x] Fix fontWeight modifiers for iOS 15
+- [x] Ensure all UI components work on iOS 15+
+
+### State Management Improvements
+- [x] Switch from @StateObject to @EnvironmentObject pattern
+- [x] Fix MainActor issues with AppState
+- [x] Ensure proper state updates in UI
+
 ## Technical Notes
 
 ### Key Implementation Details:
@@ -296,3 +314,9 @@
 - Maintain 90%+ visual quality score
 - Process 1-2 photos per second
 - Support batches up to 1000 photos
+
+### Recent Changes:
+- App renamed from "ImageCompressor" to "Ziply"
+- Added custom date range picker functionality
+- Improved modular architecture for better Swift compilation
+- Fixed iOS 15 compatibility issues

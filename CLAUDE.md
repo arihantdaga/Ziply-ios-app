@@ -141,3 +141,8 @@ Implement `BGProcessingTask` for large batch operations to prevent app suspensio
 - Use PHPickerViewController for privacy-preserving photo selection
 - Store only photo identifiers, not actual photo data
 - Implement proper error handling for permission denials
+
+
+## Things to remember
+- Update @todo.md when you complete tasks that were listed there
+- If you add new features or make significant changes to the original plan, update todo.md accordingly
