@@ -8,10 +8,11 @@
 import SwiftUI
 import Photos
 
-enum DateRangeOption {
+enum DateRangeOption: Equatable {
     case lastWeek
     case lastMonth
     case last3Months
+    case custom(DateInterval)
     
     var dateInterval: DateInterval {
         let now = Date()
@@ -20,19 +21,24 @@ enum DateRangeOption {
         switch self {
         case .lastWeek:
             startDate = Calendar.current.date(byAdding: .day, value: -7, to: now) ?? now
+            return DateInterval(start: startDate, end: now)
         case .lastMonth:
             startDate = Calendar.current.date(byAdding: .month, value: -1, to: now) ?? now
+            return DateInterval(start: startDate, end: now)
         case .last3Months:
             startDate = Calendar.current.date(byAdding: .month, value: -3, to: now) ?? now
+            return DateInterval(start: startDate, end: now)
+        case .custom(let interval):
+            return interval
         }
-        
-        return DateInterval(start: startDate, end: now)
     }
 }
 
 @MainActor
 class PhotoSelectionViewModel: ObservableObject {
     @Published var selectedDateRange: DateRangeOption = .lastMonth
+    @Published var customStartDate = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
+    @Published var customEndDate = Date()
     @Published var minimumPhotoSize: Float = 2.5 // MB
     @Published var isSearching = false
     @Published var photosFound = 0
@@ -45,7 +51,13 @@ class PhotoSelectionViewModel: ObservableObject {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, yyyy"
         let interval = selectedDateRange.dateInterval
-        return "\(formatter.string(from: interval.start)) - \(formatter.string(from: interval.end))"
+        
+        switch selectedDateRange {
+        case .custom:
+            return "Custom: \(formatter.string(from: interval.start)) - \(formatter.string(from: interval.end))"
+        default:
+            return "\(formatter.string(from: interval.start)) - \(formatter.string(from: interval.end))"
+        }
     }
     
     var totalSizeText: String {

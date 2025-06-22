@@ -40,10 +40,10 @@ Once the Xcode project is created, typical commands will include:
 
 ```bash
 # Build project
-xcodebuild -scheme ImageCompressor -destination 'platform=iOS Simulator,name=iPhone 15'
+xcodebuild -scheme ImageCompressor -destination 'platform=iOS Simulator,name=iPhone 16'
 
 # Run tests
-xcodebuild test -scheme ImageCompressor -destination 'platform=iOS Simulator,name=iPhone 15'
+xcodebuild test -scheme ImageCompressor -destination 'platform=iOS Simulator,name=iPhone 16'
 
 # If using Swift Package Manager
 swift build
