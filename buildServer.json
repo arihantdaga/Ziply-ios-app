@@ -1,0 +1,19 @@
+{
+	"name": "xcode build server",
+	"version": "0.2",
+	"bspVersion": "2.0",
+	"languages": [
+		"c",
+		"cpp",
+		"objective-c",
+		"objective-cpp",
+		"swift"
+	],
+	"argv": [
+		"/opt/homebrew/bin/xcode-build-server"
+	],
+	"workspace": "/Users/arihantdagap/Documents/dev/arihant/image_compressor_ios/Ziply/Ziply.xcodeproj/project.xcworkspace",
+	"build_root": "/Users/arihantdagap/Library/Developer/Xcode/DerivedData/Ziply-eiyuvuxxlufijabmyoobhysfqohn",
+	"scheme": "Ziply",
+	"kind": "xcode"
+}

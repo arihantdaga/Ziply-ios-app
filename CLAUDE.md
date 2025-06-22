@@ -4,14 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an iOS image compression app designed to reduce photo sizes while preserving album organization and metadata. The app integrates directly with iOS Photos library to provide a seamless compression experience.
+Ziply is an iOS image compression app designed to reduce photo sizes while preserving album organization and metadata. The app integrates directly with iOS Photos library to provide a seamless compression experience.
 
 ## Development Status
 
-**Current Phase**: Planning/Documentation
+**Current Phase**: Initial Development
+- Xcode project created with name "Ziply"
+- Bundle ID: `com.theopendiaries.Ziply`
+- Default SwiftUI template with Core Data (to be removed)
 - Project specifications completed in `description.md`
 - Technical exploration documented in `brainstorm.md`
-- No Xcode project or Swift code exists yet
 
 ## Key Technical Decisions
 
@@ -56,18 +58,39 @@ fastlane scan  # Run tests
 fastlane gym   # Build app
 ```
 
-## Project Structure (Tentative and Flexible) (Future)
-### If it changes, remember to update it here as well. 
+## Current Project Structure
 
 ```
-ImageCompressor/
+Ziply/
+├── Ziply/
+│   ├── ZiplyApp.swift (main app entry - needs cleanup)
+│   ├── ContentView.swift (to be replaced)
+│   ├── Persistence.swift (to be removed)
+│   ├── Assets.xcassets/
+│   ├── Preview Content/
+│   └── Ziply.xcdatamodeld (to be removed)
+├── ZiplyTests/
+└── ZiplyUITests/
+```
+
+## Target Project Structure
+
+```
+Ziply/
 ├── App/
-│   ├── ImageCompressorApp.swift
+│   ├── ZiplyApp.swift
 │   └── Info.plist
 ├── Views/
-│   ├── PhotoSelectionView.swift
-│   ├── CompressionProgressView.swift
-│   └── SettingsView.swift
+│   ├── Onboarding/
+│   │   └── OnboardingView.swift
+│   ├── PhotoSelection/
+│   │   ├── PhotoSelectionView.swift
+│   │   └── PreviewResultsView.swift
+│   ├── Compression/
+│   │   ├── CompressionProgressView.swift
+│   │   └── CompressionResultsView.swift
+│   └── Settings/
+│       └── SettingsView.swift
 ├── ViewModels/
 │   ├── PhotoSelectionViewModel.swift
 │   └── CompressionViewModel.swift
