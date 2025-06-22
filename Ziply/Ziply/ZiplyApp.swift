@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct ZiplyApp: App {
+    @StateObject private var appState = AppState.shared
+    
     var body: some Scene {
         WindowGroup {
             OnboardingView()
+                .environmentObject(appState)
         }
     }
 }

@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct PhotoSelectionView: View {
-  @StateObject private var viewModel = PhotoSelectionViewModel()
+  @EnvironmentObject var appState: AppState
   @State private var showPreviewResults = false
-
+  
   var body: some View {
     NavigationView {
       ScrollView {
@@ -24,27 +24,27 @@ struct PhotoSelectionView: View {
             HStack(spacing: 12) {
               DateRangeButton(
                 title: "Last Week",
-                isSelected: viewModel.selectedDateRange == .lastWeek,
-                action: { viewModel.selectedDateRange = .lastWeek }
+                isSelected: appState.photoSelectionViewModel.selectedDateRange == .lastWeek,
+                action: { appState.photoSelectionViewModel.selectedDateRange = .lastWeek }
               )
 
               DateRangeButton(
                 title: "Last Month",
-                isSelected: viewModel.selectedDateRange == .lastMonth,
-                action: { viewModel.selectedDateRange = .lastMonth }
+                isSelected: appState.photoSelectionViewModel.selectedDateRange == .lastMonth,
+                action: { appState.photoSelectionViewModel.selectedDateRange = .lastMonth }
               )
 
               DateRangeButton(
                 title: "Last 3 Months",
-                isSelected: viewModel.selectedDateRange == .last3Months,
-                action: { viewModel.selectedDateRange = .last3Months }
+                isSelected: appState.photoSelectionViewModel.selectedDateRange == .last3Months,
+                action: { appState.photoSelectionViewModel.selectedDateRange = .last3Months }
               )
             }
             .padding(.horizontal)
 
             // Date range display
             HStack {
-              Text(viewModel.dateRangeText)
+              Text(appState.photoSelectionViewModel.dateRangeText)
                 .font(.caption)
                 .foregroundColor(.secondary)
               Spacer()
@@ -64,7 +64,7 @@ struct PhotoSelectionView: View {
 
               Spacer()
 
-              Text("\(String(format: "%.1f", viewModel.minimumPhotoSize)) MB")
+              Text("\(String(format: "%.1f", appState.photoSelectionViewModel.minimumPhotoSize)) MB")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.white)
@@ -84,7 +84,7 @@ struct PhotoSelectionView: View {
                 .foregroundColor(.secondary)
 
               Slider(
-                value: $viewModel.minimumPhotoSize,
+                value: $appState.photoSelectionViewModel.minimumPhotoSize,
                 in: 0.1...5.0,
                 step: 0.1
               )
@@ -105,9 +105,16 @@ struct PhotoSelectionView: View {
           // Find Photos Button
           Button(action: findPhotos) {
             HStack {
-              Image(systemName: "bolt.fill")
-              Image(systemName: "magnifyingglass")
-              Text("Find Photos to Compress")
+              if appState.photoSelectionViewModel.isSearching {
+                ProgressView()
+                  .progressViewStyle(CircularProgressViewStyle())
+                  .scaleEffect(0.8)
+                  .foregroundColor(.white)
+              } else {
+                Image(systemName: "bolt.fill")
+                Image(systemName: "magnifyingglass")
+              }
+              Text(appState.photoSelectionViewModel.isSearching ? "Searching..." : "Find Photos to Compress")
                 .fontWeight(.semibold)
             }
             .foregroundColor(.white)
@@ -117,8 +124,8 @@ struct PhotoSelectionView: View {
             .cornerRadius(12)
           }
           .padding(.horizontal)
-          .disabled(viewModel.isSearching)
-          .opacity(viewModel.isSearching ? 0.6 : 1.0)
+          .disabled(appState.photoSelectionViewModel.isSearching)
+          .opacity(appState.photoSelectionViewModel.isSearching ? 0.6 : 1.0)
         }
         .padding(.vertical)
       }
@@ -136,9 +143,11 @@ struct PhotoSelectionView: View {
 
   private func findPhotos() {
     Task {
-      await viewModel.findPhotos()
-      if viewModel.photosFound > 0 {
+      await appState.photoSelectionViewModel.findPhotos()
+      if appState.photoSelectionViewModel.photosFound > 0 {
         showPreviewResults = true
+      } else {
+        // Show alert that no photos were found
       }
     }
   }
@@ -165,7 +174,7 @@ struct DateRangeButton: View {
   }
 }
 
-
 #Preview {
 	PhotoSelectionView()
+    .environmentObject(AppState.shared)
 }

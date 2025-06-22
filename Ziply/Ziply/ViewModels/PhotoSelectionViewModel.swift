@@ -37,6 +37,9 @@ class PhotoSelectionViewModel: ObservableObject {
     @Published var isSearching = false
     @Published var photosFound = 0
     @Published var totalSize: Int64 = 0
+    @Published var selectedAssets: [PHAsset] = []
+    
+    private let photoService = PhotoLibraryService.shared
     
     var dateRangeText: String {
         let formatter = DateFormatter()
@@ -45,15 +48,73 @@ class PhotoSelectionViewModel: ObservableObject {
         return "\(formatter.string(from: interval.start)) - \(formatter.string(from: interval.end))"
     }
     
+    var totalSizeText: String {
+        photoService.formatBytes(totalSize)
+    }
+    
+    var estimatedSavings: Int64 {
+        photoService.estimateCompressedSize(totalSize)
+    }
+    
+    var estimatedSavingsText: String {
+        let savings = totalSize - estimatedSavings
+        return photoService.formatBytes(savings)
+    }
+    
+    var compressionPercentage: Int {
+        guard totalSize > 0 else { return 0 }
+        let savings = totalSize - estimatedSavings
+        return Int((Double(savings) / Double(totalSize)) * 100)
+    }
+    
     func findPhotos() async {
         isSearching = true
+        selectedAssets = []
+        photosFound = 0
+        totalSize = 0
         
-        // TODO: Implement actual photo fetching logic
-        // For now, simulate finding photos
-        try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second delay
+        // Check authorization first
+        let status = photoService.authorizationStatus
+        print("Photo authorization status: \(status.rawValue)")
         
-        photosFound = 327 // Simulated value from mockup
-        totalSize = 1_800_000_000 // 1.8 GB in bytes
+        if status != .authorized && status != .limited {
+            print("No photo access - requesting authorization")
+            let granted = await photoService.requestAuthorization()
+            if !granted {
+                print("Authorization denied")
+                isSearching = false
+                return
+            }
+        }
+        
+        // Convert MB to bytes
+        let minimumSizeInBytes = Int64(minimumPhotoSize * 1024 * 1024)
+        print("Minimum size filter: \(minimumSizeInBytes) bytes (\(minimumPhotoSize) MB)")
+        
+        // Fetch photos in date range
+        let assets = await photoService.fetchPhotos(
+            dateRange: selectedDateRange.dateInterval,
+            minimumSize: minimumSizeInBytes
+        )
+        
+        print("Found \(assets.count) assets before size filtering")
+        
+        // Filter by size
+        let filteredAssets = await photoService.filterAssetsBySize(
+            assets,
+            minimumSize: minimumSizeInBytes
+        )
+        
+        print("Found \(filteredAssets.count) assets after size filtering")
+        
+        // Calculate total size
+        let size = await photoService.calculateTotalSize(for: filteredAssets)
+        print("Total size: \(size) bytes")
+        
+        // Update UI
+        selectedAssets = filteredAssets
+        photosFound = filteredAssets.count
+        totalSize = size
         
         isSearching = false
     }

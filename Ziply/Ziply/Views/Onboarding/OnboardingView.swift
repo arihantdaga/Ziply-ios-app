@@ -99,6 +99,7 @@ struct OnboardingView: View {
         }
         .fullScreenCover(isPresented: $showMainApp) {
             MainTabView()
+                .environmentObject(AppState.shared)
         }
         .onAppear {
             checkPhotoLibraryPermission()
