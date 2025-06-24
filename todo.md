@@ -61,28 +61,28 @@
 - [x] Add size formatting and estimation utilities
 
 ### 2.2 Image Compression Service
-- [ ] Create `CompressionService.swift`
-- [ ] Implement core compression logic:
+- [x] Create `CompressionService.swift`
+- [x] Implement core compression logic:
   ```swift
   func compressImage(_ image: UIImage, maxDimension: CGFloat, quality: CGFloat) -> Data?
   func estimateCompressedSize(originalSize: Int64) -> Int64
   ```
-- [ ] Add batch processing:
+- [x] Add batch processing:
   ```swift
   func compressBatch(_ assets: [PHAsset], progress: @escaping (Float) -> Void) async
   ```
-- [ ] Implement quality calculation:
+- [x] Implement quality calculation:
   ```swift
   func calculateQualityScore(original: UIImage, compressed: UIImage) -> Float
   ```
 
 ### 2.3 Metadata Service
-- [ ] Create `MetadataService.swift`
-- [ ] Implement metadata extraction:
+- [x] Create `MetadataService.swift`
+- [x] Implement metadata extraction:
   ```swift
   func extractMetadata(from asset: PHAsset) -> [String: Any]?
   ```
-- [ ] Implement metadata preservation:
+- [x] Implement metadata preservation:
   ```swift
   func embedMetadata(_ metadata: [String: Any], into imageData: Data) -> Data?
   ```
@@ -151,8 +151,8 @@
   - Time remaining
   - Average quality retained
   - Error count
-- [ ] Add cancel functionality
-- [ ] Implement actual compression logic
+- [x] Add cancel functionality
+- [x] Implement actual compression logic
 
 ### 3.6 Results Screen (Screen 5)
 - [x] Create `CompressionResultsView.swift`
@@ -184,11 +184,11 @@
 
 ### 4.2 Compression View Model
 - [x] Create basic structure
-- [ ] Implement compression queue management
-- [ ] Track progress for each photo
-- [ ] Handle errors gracefully
-- [ ] Update statistics in real-time
-- [ ] Support cancellation
+- [x] Implement compression queue management
+- [x] Track progress for each photo
+- [x] Handle errors gracefully
+- [x] Update statistics in real-time
+- [x] Support cancellation
 
 ### 4.3 App State Manager
 - [x] Create central state management (AppState.swift) for:
@@ -202,18 +202,18 @@
 ## Phase 5: Core Features Implementation
 
 ### 5.1 Photo Compression Pipeline
-- [ ] Load photo from PHAsset
-- [ ] Resize maintaining aspect ratio (max 1500px)
-- [ ] Apply JPEG compression (75-80% quality)
-- [ ] Preserve metadata
-- [ ] Save to photo library
-- [ ] Update album organization
+- [x] Load photo from PHAsset
+- [x] Resize maintaining aspect ratio (max 1500px)
+- [x] Apply JPEG compression (75-80% quality)
+- [x] Preserve metadata
+- [x] Save to photo library
+- [x] Update album organization
 
 ### 5.2 Album Management
-- [ ] Detect source albums for selected photos
-- [ ] Create "Compressed - [Album Name]" albums
-- [ ] Maintain photo-album relationships
-- [ ] Handle edge cases (no album, multiple albums)
+- [x] Detect source albums for selected photos
+- [x] Create "Compressed - [Album Name]" albums
+- [x] Maintain photo-album relationships
+- [x] Handle edge cases (no album, multiple albums)
 
 ### 5.3 Progress Tracking
 - [ ] Implement progress calculation

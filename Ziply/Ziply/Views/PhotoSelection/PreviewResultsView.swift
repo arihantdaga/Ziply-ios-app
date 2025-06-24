@@ -146,7 +146,7 @@ struct PreviewResultsView: View {
         .navigationBarTitleDisplayMode(.large)
         .background(
             NavigationLink(isActive: $showCompressionProgress) {
-                CompressionProgressView()
+                CompressionProgressView(assets: appState.photoSelectionViewModel.selectedAssets)
             } label: {
                 EmptyView()
             }

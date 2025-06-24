@@ -11,6 +11,8 @@ struct CompressionResultsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingDetails = false
     
+    let summary: CompressionSummary
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
@@ -45,7 +47,7 @@ struct CompressionResultsView: View {
                                 .font(.headline)
                                 .foregroundColor(.white)
                             
-                            Text("1.8 GB")
+                            Text(PhotoLibraryService.shared.formatBytes(summary.totalSpaceSaved))
                                 .font(.system(size: 56, weight: .bold))
                                 .foregroundColor(.white)
                         }
@@ -65,13 +67,13 @@ struct CompressionResultsView: View {
                         VStack(spacing: 16) {
                             HStack(spacing: 16) {
                                 ResultStatCard(
-                                    value: "327",
+                                    value: "\(summary.successfulPhotos)",
                                     subtitle: "Photos\nCompressed",
                                     color: .blue
                                 )
                                 
                                 ResultStatCard(
-                                    value: "75%",
+                                    value: "\(Int(summary.compressionPercentage))%",
                                     subtitle: "Size\nReduction",
                                     color: .blue
                                 )
@@ -79,13 +81,13 @@ struct CompressionResultsView: View {
                             
                             HStack(spacing: 16) {
                                 ResultStatCard(
-                                    value: "94%",
+                                    value: "\(Int(summary.averageQuality * 100))%",
                                     subtitle: "Quality\nRetained",
                                     color: .secondary
                                 )
                                 
                                 ResultStatCard(
-                                    value: "3:47",
+                                    value: summary.formattedTimeTaken,
                                     subtitle: "Time\nTaken",
                                     color: .secondary
                                 )
@@ -171,5 +173,13 @@ struct ResultStatCard: View {
 }
 
 #Preview {
-    CompressionResultsView()
+    CompressionResultsView(summary: CompressionSummary(
+        totalPhotos: 327,
+        successfulPhotos: 327,
+        failedPhotos: 0,
+        totalSpaceSaved: 1932735283,
+        averageCompressionRatio: 0.25,
+        averageQuality: 0.94,
+        timeTaken: 227
+    ))
 }

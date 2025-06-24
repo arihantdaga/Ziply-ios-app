@@ -6,13 +6,15 @@
 //
 
 import SwiftUI
+import Photos
 
 struct CompressionProgressView: View {
-    @State private var progress: CGFloat = 0.67
-    @State private var photosProcessed = 218
-    @State private var totalPhotos = 327
+    @StateObject private var viewModel = CompressionViewModel()
     @State private var showResults = false
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appState: AppState
+    
+    let assets: [PHAsset]
     
     var body: some View {
         ZStack {
@@ -32,7 +34,7 @@ struct CompressionProgressView: View {
                     
                     // Progress circle
                     Circle()
-                        .trim(from: 0, to: progress)
+                        .trim(from: 0, to: CGFloat(viewModel.currentProgress))
                         .stroke(
                             LinearGradient(
                                 colors: [Color.blue, Color.blue.opacity(0.7)],
@@ -43,11 +45,11 @@ struct CompressionProgressView: View {
                         )
                         .frame(width: 200, height: 200)
                         .rotationEffect(.degrees(-90))
-                        .animation(.easeInOut(duration: 0.5), value: progress)
+                        .animation(.easeInOut(duration: 0.5), value: viewModel.currentProgress)
                     
                     // Percentage text
                     VStack(spacing: 8) {
-                        Text("\(Int(progress * 100))%")
+                        Text("\(viewModel.progressPercentage)%")
                             .font(.system(size: 48, weight: .bold))
                             .foregroundColor(.white)
                         
@@ -64,7 +66,7 @@ struct CompressionProgressView: View {
                     .foregroundColor(.white)
                 
                 // Progress subtitle
-                Text("\(photosProcessed) of \(totalPhotos) photos processed")
+                Text("\(viewModel.photosProcessed) of \(viewModel.totalPhotos) photos processed")
                     .font(.subheadline)
                     .foregroundColor(.white.opacity(0.8))
                 
@@ -72,13 +74,13 @@ struct CompressionProgressView: View {
                 VStack(spacing: 24) {
                     HStack(spacing: 40) {
                         StatItem(
-                            value: "1.2 GB",
+                            value: viewModel.formattedSpaceFreed,
                             label: "Space Freed",
                             color: .white
                         )
                         
                         StatItem(
-                            value: "2:34",
+                            value: viewModel.formattedTimeRemaining,
                             label: "Time Remaining",
                             color: .white
                         )
@@ -86,13 +88,13 @@ struct CompressionProgressView: View {
                     
                     HStack(spacing: 40) {
                         StatItem(
-                            value: "94%",
+                            value: "\(Int(viewModel.averageQuality * 100))%",
                             label: "Avg. Quality",
                             color: .white
                         )
                         
                         StatItem(
-                            value: "0",
+                            value: "\(viewModel.errors)",
                             label: "Errors",
                             color: .white
                         )
@@ -118,27 +120,20 @@ struct CompressionProgressView: View {
         }
         .navigationBarHidden(true)
         .onAppear {
-            simulateProgress()
+            viewModel.startCompression(assets: assets)
         }
-        .fullScreenCover(isPresented: $showResults) {
-            CompressionResultsView()
-        }
-    }
-    
-    private func simulateProgress() {
-        // Simulate progress for demo
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
-            if progress < 1.0 {
-                progress += 0.01
-                photosProcessed = Int(Double(totalPhotos) * Double(progress))
-            } else {
-                timer.invalidate()
+        .onChange(of: viewModel.isCompressing) { isCompressing in
+            if !isCompressing && viewModel.photosProcessed > 0 {
                 showResults = true
             }
+        }
+        .fullScreenCover(isPresented: $showResults) {
+            CompressionResultsView(summary: viewModel.getCompressionSummary())
         }
     }
     
     private func cancelCompression() {
+        viewModel.cancelCompression()
         dismiss()
     }
 }
@@ -163,5 +158,6 @@ struct StatItem: View {
 }
 
 #Preview {
-    CompressionProgressView()
+    CompressionProgressView(assets: [])
+        .environmentObject(AppState.shared)
 }
