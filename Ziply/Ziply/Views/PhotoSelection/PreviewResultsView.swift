@@ -151,6 +151,11 @@ struct PreviewResultsView: View {
                 EmptyView()
             }
         )
+        .onChange(of: appState.shouldResetNavigation) { shouldReset in
+            if shouldReset {
+                showCompressionProgress = false
+            }
+        }
     }
     
     private func startCompression() {

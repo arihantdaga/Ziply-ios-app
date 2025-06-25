@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CompressionResultsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var showingDetails = false
+    @EnvironmentObject var appState: AppState
     
     let summary: CompressionSummary
     
@@ -99,28 +99,16 @@ struct CompressionResultsView: View {
                     }
                 }
                 
-                // Bottom Buttons
+                // Bottom Button
                 VStack(spacing: 12) {
-                    HStack(spacing: 12) {
-                        Button(action: viewDetails) {
-                            Text("View Details")
-                                .fontWeight(.medium)
-                                .foregroundColor(.primary)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                                .background(Color(.systemGray5))
-                                .cornerRadius(12)
-                        }
-                        
-                        Button(action: compressMore) {
-                            Text("Compress More")
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                                .background(Color.blue)
-                                .cornerRadius(12)
-                        }
+                    Button(action: compressMore) {
+                        Text("Compress More")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.blue)
+                            .cornerRadius(12)
                     }
                 }
                 .padding()
@@ -137,13 +125,8 @@ struct CompressionResultsView: View {
         }
     }
     
-    private func viewDetails() {
-        // Show details view
-        showingDetails = true
-    }
-    
     private func compressMore() {
-        // Dismiss and go back to photo selection
+        // This will trigger navigation reset and dismiss
         dismiss()
     }
 }
@@ -182,4 +165,5 @@ struct ResultStatCard: View {
         averageQuality: 0.94,
         timeTaken: 227
     ))
+    .environmentObject(AppState.shared)
 }

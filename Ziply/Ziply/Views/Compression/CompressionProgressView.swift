@@ -127,8 +127,13 @@ struct CompressionProgressView: View {
                 showResults = true
             }
         }
-        .fullScreenCover(isPresented: $showResults) {
+        .fullScreenCover(isPresented: $showResults, onDismiss: {
+            // When results are dismissed, reset navigation to go home
+            appState.resetToHome()
+            dismiss()
+        }) {
             CompressionResultsView(summary: viewModel.getCompressionSummary())
+                .environmentObject(appState)
         }
     }
     

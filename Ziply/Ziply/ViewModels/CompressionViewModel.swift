@@ -231,10 +231,19 @@ class CompressionViewModel: ObservableObject {
         // In a real implementation, you might want to use SSIM or other quality metrics
         let avgRatio = averageCompressionRatio
         
-        // Assume quality is inversely related to compression
+        // Handle cases where compression might increase size
+        if avgRatio >= 1.0 {
+            // If file got larger, assume quality is preserved (but compression failed)
+            return 0.95
+        }
+        
+        // Normal case: quality decreases as compression increases
         // If compressed to 25% of original (ratio 0.25), quality might be ~85%
-        // This is a simplified estimation
-        return Float(0.7 + (avgRatio * 0.3))
+        // This gives a range from 70% to 100% quality
+        let quality = Float(0.7 + (avgRatio * 0.3))
+        
+        // Ensure quality is between 0 and 1
+        return min(max(quality, 0), 1)
     }
     
     // MARK: - Result Summary

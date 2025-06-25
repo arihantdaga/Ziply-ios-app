@@ -34,6 +34,12 @@ struct PhotoSelectionView: View {
             .navigationBarTitleDisplayMode(.large)
             .background(navigationLink)
         }
+        .onChange(of: appState.shouldResetNavigation) { shouldReset in
+            if shouldReset {
+                showPreviewResults = false
+                appState.shouldResetNavigation = false
+            }
+        }
     }
     
     private var findPhotosButton: some View {
