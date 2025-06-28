@@ -13,6 +13,110 @@ struct PreviewResultsView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            if appState.photoSelectionViewModel.isSearching {
+                // Loading state
+                loadingView
+            } else if appState.photoSelectionViewModel.photosFound == 0 {
+                // No photos found state
+                noPhotosView
+            } else {
+                // Results view
+                resultsView
+            }
+        }
+        .navigationTitle(appState.photoSelectionViewModel.isSearching ? "Searching..." : "Ready to Compress")
+        .navigationBarTitleDisplayMode(.large)
+        .background(
+            NavigationLink(isActive: $showCompressionProgress) {
+                CompressionProgressView(assets: appState.photoSelectionViewModel.selectedAssets)
+            } label: {
+                EmptyView()
+            }
+        )
+        .onChange(of: appState.shouldResetNavigation) { shouldReset in
+            if shouldReset {
+                showCompressionProgress = false
+            }
+        }
+        .onDisappear {
+            // Cancel search if user goes back
+            appState.photoSelectionViewModel.cancelSearch()
+        }
+    }
+    
+    private var loadingView: some View {
+        VStack(spacing: 32) {
+            Spacer()
+            
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+                .scaleEffect(1.5)
+            
+            VStack(spacing: 16) {
+                Text("Searching your photo library...")
+                    .font(.headline)
+                
+                // Live update of found photos
+                if appState.photoSelectionViewModel.photosFound > 0 {
+                    VStack(spacing: 8) {
+                        Text("\(appState.photoSelectionViewModel.photosFound)")
+                            .font(.system(size: 48, weight: .bold))
+                            .foregroundColor(.blue)
+                        
+                        Text("Photos found")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        Text(appState.photoSelectionViewModel.totalSizeText)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.top)
+                }
+            }
+            
+            Spacer()
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemBackground))
+    }
+    
+    private var noPhotosView: some View {
+        VStack(spacing: 24) {
+            Spacer()
+            
+            Image(systemName: "photo.on.rectangle.angled")
+                .font(.system(size: 64))
+                .foregroundColor(.secondary)
+            
+            VStack(spacing: 12) {
+                Text("No Photos Found")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Text("No photos match your selected criteria.\nTry adjusting the filters.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            
+            Button(action: { 
+                // This will be handled by navigation back
+            }) {
+                Label("Adjust Filters", systemImage: "slider.horizontal.3")
+                    .foregroundColor(.blue)
+            }
+            
+            Spacer()
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemBackground))
+    }
+    
+    private var resultsView: some View {
+        VStack(spacing: 0) {
             // Main content
             ScrollView {
                 VStack(spacing: 24) {
@@ -141,20 +245,6 @@ struct PreviewResultsView: View {
                 .padding()
             }
             .background(Color(.systemBackground))
-        }
-        .navigationTitle("Ready to Compress")
-        .navigationBarTitleDisplayMode(.large)
-        .background(
-            NavigationLink(isActive: $showCompressionProgress) {
-                CompressionProgressView(assets: appState.photoSelectionViewModel.selectedAssets)
-            } label: {
-                EmptyView()
-            }
-        )
-        .onChange(of: appState.shouldResetNavigation) { shouldReset in
-            if shouldReset {
-                showCompressionProgress = false
-            }
         }
     }
     

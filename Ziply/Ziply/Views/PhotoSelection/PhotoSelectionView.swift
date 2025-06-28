@@ -45,16 +45,9 @@ struct PhotoSelectionView: View {
     private var findPhotosButton: some View {
         Button(action: findPhotos) {
             HStack {
-                if appState.photoSelectionViewModel.isSearching {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .scaleEffect(0.8)
-                        .foregroundColor(.white)
-                } else {
-                    Image(systemName: "bolt.fill")
-                    Image(systemName: "magnifyingglass")
-                }
-                Text(appState.photoSelectionViewModel.isSearching ? "Searching..." : "Find Photos to Compress")
+                Image(systemName: "bolt.fill")
+                Image(systemName: "magnifyingglass")
+                Text("Find Photos to Compress")
                     .fontWeight(.semibold)
             }
             .foregroundColor(.white)
@@ -64,8 +57,6 @@ struct PhotoSelectionView: View {
             .cornerRadius(12)
         }
         .padding(.horizontal)
-        .disabled(appState.photoSelectionViewModel.isSearching)
-        .opacity(appState.photoSelectionViewModel.isSearching ? 0.6 : 1.0)
     }
     
     private var navigationLink: some View {
@@ -77,13 +68,12 @@ struct PhotoSelectionView: View {
     }
     
     private func findPhotos() {
+        // Navigate immediately
+        showPreviewResults = true
+        
+        // Start searching in background
         Task {
             await appState.photoSelectionViewModel.findPhotos()
-            if appState.photoSelectionViewModel.photosFound > 0 {
-                showPreviewResults = true
-            } else {
-                // Show alert that no photos were found
-            }
         }
     }
 }
