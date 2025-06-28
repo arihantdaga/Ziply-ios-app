@@ -146,3 +146,9 @@ Implement `BGProcessingTask` for large batch operations to prevent app suspensio
 ## Things to remember
 - Update @todo.md when you complete tasks that were listed there
 - If you add new features or make significant changes to the original plan, update todo.md accordingly
+
+## Git Commit Guidelines
+- Create commits after each bug fix or major change
+- Use descriptive commit messages with emojis
+- Do NOT mention Claude or Anthropic in commit messages
+- Example commit format: "🐛 Fix date filter selection state update"

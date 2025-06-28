@@ -22,19 +22,28 @@ struct DateRangeSelectionView: View {
                     DateRangeButton(
                         title: "Last Week",
                         isSelected: appState.photoSelectionViewModel.selectedDateRange == .lastWeek,
-                        action: { appState.photoSelectionViewModel.selectedDateRange = .lastWeek }
+                        action: { 
+                            appState.objectWillChange.send()
+                            appState.photoSelectionViewModel.selectedDateRange = .lastWeek 
+                        }
                     )
                     
                     DateRangeButton(
                         title: "Last Month",
                         isSelected: appState.photoSelectionViewModel.selectedDateRange == .lastMonth,
-                        action: { appState.photoSelectionViewModel.selectedDateRange = .lastMonth }
+                        action: { 
+                            appState.objectWillChange.send()
+                            appState.photoSelectionViewModel.selectedDateRange = .lastMonth 
+                        }
                     )
                     
                     DateRangeButton(
                         title: "Last 3 Months",
                         isSelected: appState.photoSelectionViewModel.selectedDateRange == .last3Months,
-                        action: { appState.photoSelectionViewModel.selectedDateRange = .last3Months }
+                        action: { 
+                            appState.objectWillChange.send()
+                            appState.photoSelectionViewModel.selectedDateRange = .last3Months 
+                        }
                     )
                 }
                 
@@ -72,6 +81,7 @@ struct DateRangeSelectionView: View {
             start: appState.photoSelectionViewModel.customStartDate,
             end: appState.photoSelectionViewModel.customEndDate
         )
+        appState.objectWillChange.send()
         appState.photoSelectionViewModel.selectedDateRange = .custom(interval)
         withAnimation {
             showCustomDatePicker = false
