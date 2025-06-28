@@ -38,6 +38,12 @@ struct PreviewResultsView: View {
                 showCompressionProgress = false
             }
         }
+        .onAppear {
+            // Start search when view appears
+            Task {
+                await appState.photoSelectionViewModel.findPhotos()
+            }
+        }
         .onDisappear {
             // Cancel search if user goes back
             appState.photoSelectionViewModel.cancelSearch()

@@ -164,9 +164,10 @@ class PhotoSelectionViewModel: ObservableObject {
     }
     
     func resetSearch() {
-        cancelSearch()
+        searchTask?.cancel()
         selectedAssets = []
         photosFound = 0
         totalSize = 0
+        // Don't set isSearching to false here - let findPhotos manage it
     }
 }

@@ -68,13 +68,12 @@ struct PhotoSelectionView: View {
     }
     
     private func findPhotos() {
+        // Reset search state and mark as searching
+        appState.photoSelectionViewModel.resetSearch()
+        appState.photoSelectionViewModel.isSearching = true
+        
         // Navigate immediately
         showPreviewResults = true
-        
-        // Start searching in background
-        Task {
-            await appState.photoSelectionViewModel.findPhotos()
-        }
     }
 }
 
