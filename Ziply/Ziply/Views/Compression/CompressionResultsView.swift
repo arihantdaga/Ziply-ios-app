@@ -92,6 +92,21 @@ struct CompressionResultsView: View {
                                     color: .secondary
                                 )
                             }
+                            
+                            // Show skipped photos info if any
+                            if summary.skippedPhotos > 0 {
+                                HStack {
+                                    Image(systemName: "info.circle.fill")
+                                        .foregroundColor(.yellow)
+                                    Text("\(summary.skippedPhotos) photos were already compressed")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 12)
+                                .background(Color(.systemGray6))
+                                .cornerRadius(8)
+                            }
                         }
                         .padding(.horizontal)
                         
@@ -160,6 +175,7 @@ struct ResultStatCard: View {
         totalPhotos: 327,
         successfulPhotos: 327,
         failedPhotos: 0,
+        skippedPhotos: 0,
         totalSpaceSaved: 1932735283,
         averageCompressionRatio: 0.25,
         averageQuality: 0.94,

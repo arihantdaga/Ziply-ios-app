@@ -13,6 +13,7 @@ class CompressionViewModel: ObservableObject {
     @Published var totalPhotos = 0
     @Published var spaceFreed: Int64 = 0
     @Published var errors = 0
+    @Published var skippedPhotos = 0
     @Published var averageQuality: Float = 0.0
     @Published var estimatedTimeRemaining: TimeInterval = 0
     @Published var compressionResults: [CompressedImageResult] = []
@@ -79,6 +80,7 @@ class CompressionViewModel: ObservableObject {
         photosProcessed = 0
         spaceFreed = 0
         errors = 0
+        skippedPhotos = 0
         currentProgress = 0
         compressionResults = []
         startTime = Date()
@@ -129,6 +131,16 @@ class CompressionViewModel: ObservableObject {
     
     private func processAsset(_ asset: PHAsset, targetAlbum: PHAssetCollection?) async {
         do {
+            // Check if already compressed
+            let isAlreadyCompressed = await compressionService.isAssetCompressed(asset, in: targetAlbum)
+            
+            if isAlreadyCompressed {
+                print("Asset already compressed, skipping: \(asset.localIdentifier)")
+                // Still count it as processed but don't compress again
+                skippedPhotos += 1
+                return
+            }
+            
             // Compress the image
             let result = try await compressionService.compressImage(from: asset)
             
@@ -251,8 +263,9 @@ class CompressionViewModel: ObservableObject {
     func getCompressionSummary() -> CompressionSummary {
         return CompressionSummary(
             totalPhotos: totalPhotos,
-            successfulPhotos: photosProcessed - errors,
+            successfulPhotos: photosProcessed - errors - skippedPhotos,
             failedPhotos: errors,
+            skippedPhotos: skippedPhotos,
             totalSpaceSaved: totalSpaceSaved,
             averageCompressionRatio: averageCompressionRatio,
             averageQuality: averageQuality,
@@ -267,6 +280,7 @@ struct CompressionSummary {
     let totalPhotos: Int
     let successfulPhotos: Int
     let failedPhotos: Int
+    let skippedPhotos: Int
     let totalSpaceSaved: Int64
     let averageCompressionRatio: Double
     let averageQuality: Float

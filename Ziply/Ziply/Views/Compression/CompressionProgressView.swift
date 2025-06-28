@@ -66,9 +66,17 @@ struct CompressionProgressView: View {
                     .foregroundColor(.white)
                 
                 // Progress subtitle
-                Text("\(viewModel.photosProcessed) of \(viewModel.totalPhotos) photos processed")
-                    .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.8))
+                VStack(spacing: 4) {
+                    Text("\(viewModel.photosProcessed) of \(viewModel.totalPhotos) photos processed")
+                        .font(.subheadline)
+                        .foregroundColor(.white.opacity(0.8))
+                    
+                    if viewModel.skippedPhotos > 0 {
+                        Text("(\(viewModel.skippedPhotos) already compressed)")
+                            .font(.caption)
+                            .foregroundColor(.yellow.opacity(0.8))
+                    }
+                }
                 
                 // Stats Grid
                 VStack(spacing: 24) {

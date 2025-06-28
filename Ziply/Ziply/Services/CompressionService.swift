@@ -122,6 +122,33 @@ class CompressionService: ObservableObject {
         return asset
     }
     
+    /// Check if an asset has already been compressed
+    func isAssetCompressed(_ asset: PHAsset, in album: PHAssetCollection?) async -> Bool {
+        guard let album = album else { return false }
+        
+        // Get the creation date of the original asset
+        guard let creationDate = asset.creationDate else { return false }
+        
+        // Fetch assets in the compressed album
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        
+        let assets = PHAsset.fetchAssets(in: album, options: fetchOptions)
+        var isCompressed = false
+        
+        assets.enumerateObjects { compressedAsset, _, stop in
+            // Check if there's a compressed asset with similar creation date
+            // (within 1 second tolerance for metadata differences)
+            if let compressedDate = compressedAsset.creationDate,
+               abs(creationDate.timeIntervalSince(compressedDate)) < 1.0 {
+                isCompressed = true
+                stop.pointee = true
+            }
+        }
+        
+        return isCompressed
+    }
+    
     // MARK: - Private Methods
     
     private func loadImage(from asset: PHAsset) async throws -> UIImage {
