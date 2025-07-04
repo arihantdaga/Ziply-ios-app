@@ -122,7 +122,7 @@ class CompressionService: ObservableObject {
         return asset
     }
     
-    /// Replace original image with compressed version
+    /// Replace original image with compressed version (hides original instead of deleting)
     func replaceOriginalWithCompressed(_ result: CompressedImageResult) async throws -> PHAsset {
         let photoLibraryService = PhotoLibraryService.shared
         
@@ -161,8 +161,10 @@ class CompressionService: ObservableObject {
                 localIdentifier = placeholder.localIdentifier
             }
             
-            // Delete the original asset
-            PHAssetChangeRequest.deleteAssets([result.asset] as NSArray)
+            // Hide the original asset instead of deleting
+            if let changeRequest = PHAssetChangeRequest(for: result.asset) {
+                changeRequest.isHidden = true
+            }
         }
         
         // Fetch the created asset

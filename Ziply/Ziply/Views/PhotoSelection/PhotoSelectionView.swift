@@ -6,22 +6,15 @@
 //
 
 import SwiftUI
-import Photos
 
 struct PhotoSelectionView: View {
     @EnvironmentObject var appState: AppState
     @State private var showPreviewResults = false
-    @State private var authStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 24) {
-                    // Limited Access Warning
-                    if authStatus == .limited {
-                        limitedAccessWarning
-                    }
-                    
                     // Date Range Selection
                     DateRangeSelectionView()
                         .padding(.horizontal)
@@ -46,9 +39,6 @@ struct PhotoSelectionView: View {
                 showPreviewResults = false
                 appState.shouldResetNavigation = false
             }
-        }
-        .onAppear {
-            authStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         }
     }
     
@@ -87,33 +77,6 @@ struct PhotoSelectionView: View {
         showPreviewResults = true
     }
     
-    private var limitedAccessWarning: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundColor(.yellow)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Limited Photo Access")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                
-                Text("iOS will ask permission for each photo. Tap to grant full access.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-        }
-        .padding()
-        .background(Color.yellow.opacity(0.1))
-        .cornerRadius(12)
-        .padding(.horizontal)
-        .onTapGesture {
-            if let url = URL(string: UIApplication.openSettingsURLString) {
-                UIApplication.shared.open(url)
-            }
-        }
-    }
 }
 
 struct DateRangeButton: View {

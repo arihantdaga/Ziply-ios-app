@@ -36,7 +36,7 @@ struct CompressionResultsView: View {
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                             
-                            Text("Your photos have been compressed and replaced")
+                            Text("Your photos have been compressed")
                                 .font(.body)
                                 .foregroundColor(.secondary)
                         }
@@ -110,6 +110,37 @@ struct CompressionResultsView: View {
                         }
                         .padding(.horizontal)
                         
+                        // Hidden Originals Info
+                        VStack(spacing: 16) {
+                            HStack(spacing: 12) {
+                                Image(systemName: "info.circle.fill")
+                                    .foregroundColor(.blue)
+                                    .font(.title2)
+                                
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Original Photos Hidden")
+                                        .font(.headline)
+                                    
+                                    Text("Your original photos have been hidden to save space. You can find them in the Hidden album in Photos app and delete them manually when you're ready.")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                
+                                Spacer()
+                            }
+                            
+                            Button(action: openPhotosApp) {
+                                Label("View Hidden Album", systemImage: "photo.on.rectangle")
+                                    .font(.subheadline)
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                        .padding()
+                        .background(Color.blue.opacity(0.1))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                        
                         Spacer(minLength: 40)
                     }
                 }
@@ -143,6 +174,13 @@ struct CompressionResultsView: View {
     private func compressMore() {
         // This will trigger navigation reset and dismiss
         dismiss()
+    }
+    
+    private func openPhotosApp() {
+        // Open Photos app - iOS doesn't allow deep linking to specific albums
+        if let url = URL(string: "photos-redirect://") {
+            UIApplication.shared.open(url)
+        }
     }
 }
 
