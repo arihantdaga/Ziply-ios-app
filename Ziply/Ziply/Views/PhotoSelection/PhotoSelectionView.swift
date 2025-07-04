@@ -62,6 +62,7 @@ struct PhotoSelectionView: View {
     private var navigationLink: some View {
         NavigationLink(isActive: $showPreviewResults) {
             PreviewResultsView()
+                .environmentObject(appState)
         } label: {
             EmptyView()
         }

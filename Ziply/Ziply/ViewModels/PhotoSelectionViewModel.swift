@@ -143,6 +143,7 @@ class PhotoSelectionViewModel: ObservableObject {
                     photosFound = filteredAssets.count
                     totalSize = runningSize
                     selectedAssets = filteredAssets
+                    print("PhotoSelectionViewModel - Updated: photosFound=\(photosFound), totalSize=\(runningSize)")
                     
                     // Small delay to make the counting visible
                     try? await Task.sleep(nanoseconds: 10_000_000) // 10ms

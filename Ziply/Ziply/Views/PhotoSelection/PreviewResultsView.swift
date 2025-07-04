@@ -12,15 +12,20 @@ struct PreviewResultsView: View {
     @State private var showCompressionProgress = false
     
     var body: some View {
+        let _ = print("PreviewResultsView - isSearching: \(appState.photoSelectionViewModel.isSearching), photosFound: \(appState.photoSelectionViewModel.photosFound)")
+        
         VStack(spacing: 0) {
             if appState.photoSelectionViewModel.isSearching && appState.photoSelectionViewModel.photosFound == 0 {
                 // Loading state - only show while no photos found yet
+                let _ = print("PreviewResultsView - Showing loadingView")
                 loadingView
             } else if !appState.photoSelectionViewModel.isSearching && appState.photoSelectionViewModel.photosFound == 0 {
                 // No photos found state - only show when search is complete
+                let _ = print("PreviewResultsView - Showing noPhotosView")
                 noPhotosView
             } else {
                 // Results view - show as soon as we have photos, even if still searching
+                let _ = print("PreviewResultsView - Showing resultsView")
                 resultsView
             }
         }

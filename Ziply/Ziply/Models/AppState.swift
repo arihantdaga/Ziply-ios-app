@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 class AppState: ObservableObject {
@@ -15,7 +16,18 @@ class AppState: ObservableObject {
     @Published var photoSelectionViewModel = PhotoSelectionViewModel()
     @Published var shouldResetNavigation = false
     
-    private init() {}
+    private var cancellables = Set<AnyCancellable>()
+    
+    private init() {
+        print("AppState - Initialized")
+        
+        // Forward changes from nested view model to trigger UI updates
+        photoSelectionViewModel.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
     
     func resetToHome() {
         photoSelectionViewModel.selectedAssets = []
