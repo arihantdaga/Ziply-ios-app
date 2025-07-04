@@ -162,9 +162,8 @@ class CompressionService: ObservableObject {
             }
             
             // Hide the original asset instead of deleting
-            if let changeRequest = PHAssetChangeRequest(for: result.asset) {
-                changeRequest.isHidden = true
-            }
+            let changeRequest = PHAssetChangeRequest(for: result.asset)
+            changeRequest.isHidden = true
         }
         
         // Fetch the created asset
