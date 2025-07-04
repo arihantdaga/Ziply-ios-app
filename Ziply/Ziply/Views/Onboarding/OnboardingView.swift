@@ -10,6 +10,7 @@ import PhotosUI
 
 struct OnboardingView: View {
     @State private var showMainApp = false
+    @State private var showLimitedAccess = false
     @State private var authorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
     
     var body: some View {
@@ -37,7 +38,7 @@ struct OnboardingView: View {
                 
                 // Welcome Text
                 VStack(spacing: 16) {
-                    Text("Welcome to Compress")
+                    Text("Welcome to Ziply")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
@@ -101,6 +102,9 @@ struct OnboardingView: View {
             MainTabView()
                 .environmentObject(AppState.shared)
         }
+        .fullScreenCover(isPresented: $showLimitedAccess) {
+            LimitedAccessView(showMainApp: $showMainApp)
+        }
         .onAppear {
             checkPhotoLibraryPermission()
         }
@@ -108,8 +112,10 @@ struct OnboardingView: View {
     
     private func checkPhotoLibraryPermission() {
         authorizationStatus = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-        if authorizationStatus == .authorized || authorizationStatus == .limited {
+        if authorizationStatus == .authorized {
             showMainApp = true
+        } else if authorizationStatus == .limited {
+            showLimitedAccess = true
         }
     }
     
@@ -117,8 +123,10 @@ struct OnboardingView: View {
         PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
             DispatchQueue.main.async {
                 authorizationStatus = status
-                if status == .authorized || status == .limited {
+                if status == .authorized {
                     showMainApp = true
+                } else if status == .limited {
+                    showLimitedAccess = true
                 } else if status == .denied {
                     // Handle denied case - maybe show alert to go to settings
                 }
