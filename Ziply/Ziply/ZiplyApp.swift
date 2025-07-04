@@ -16,5 +16,6 @@ struct ZiplyApp: App {
             OnboardingView()
                 .environmentObject(appState)
         }
-    }	
+    }
+
 }

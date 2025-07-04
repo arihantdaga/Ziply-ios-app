@@ -13,18 +13,18 @@ struct PreviewResultsView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            if appState.photoSelectionViewModel.isSearching {
-                // Loading state
+            if appState.photoSelectionViewModel.isSearching && appState.photoSelectionViewModel.photosFound == 0 {
+                // Loading state - only show while no photos found yet
                 loadingView
-            } else if appState.photoSelectionViewModel.photosFound == 0 {
-                // No photos found state
+            } else if !appState.photoSelectionViewModel.isSearching && appState.photoSelectionViewModel.photosFound == 0 {
+                // No photos found state - only show when search is complete
                 noPhotosView
             } else {
-                // Results view
+                // Results view - show as soon as we have photos, even if still searching
                 resultsView
             }
         }
-        .navigationTitle(appState.photoSelectionViewModel.isSearching ? "Searching..." : "Ready to Compress")
+        .navigationTitle(appState.photoSelectionViewModel.isSearching && appState.photoSelectionViewModel.photosFound == 0 ? "Searching..." : "Ready to Compress")
         .navigationBarTitleDisplayMode(.large)
         .background(
             NavigationLink(isActive: $showCompressionProgress) {
@@ -127,10 +127,22 @@ struct PreviewResultsView: View {
             ScrollView {
                 VStack(spacing: 24) {
                     // Subtitle
-                    Text("We found photos matching your criteria")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                    if appState.photoSelectionViewModel.isSearching {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .scaleEffect(0.8)
+                            Text("Still searching...")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
                         .padding(.top)
+                    } else {
+                        Text("We found photos matching your criteria")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .padding(.top)
+                    }
                     
                     // Stats Cards
                     HStack(spacing: 16) {
@@ -238,16 +250,23 @@ struct PreviewResultsView: View {
                 
                 Button(action: startCompression) {
                     HStack {
-                        Image(systemName: "wand.and.stars")
-                        Text("Start Compression")
+                        if appState.photoSelectionViewModel.isSearching {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .scaleEffect(0.8)
+                        } else {
+                            Image(systemName: "wand.and.stars")
+                        }
+                        Text(appState.photoSelectionViewModel.isSearching ? "Still Searching..." : "Start Compression")
                             .fontWeight(.semibold)
                     }
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16)
-                    .background(Color.green)
+                    .background(appState.photoSelectionViewModel.isSearching ? Color.gray : Color.green)
                     .cornerRadius(12)
                 }
+                .disabled(appState.photoSelectionViewModel.isSearching)
                 .padding()
             }
             .background(Color(.systemBackground))
