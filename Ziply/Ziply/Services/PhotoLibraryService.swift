@@ -180,6 +180,44 @@ class PhotoLibraryService: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         return nil
     }
     
+    func getAlbumsContaining(asset: PHAsset) -> [PHAssetCollection] {
+        var albums: [PHAssetCollection] = []
+        
+        // Fetch user albums containing the asset
+        let userAlbums = PHAssetCollection.fetchAssetCollectionsContaining(
+            asset,
+            with: .album,
+            options: nil
+        )
+        userAlbums.enumerateObjects { collection, _, _ in
+            albums.append(collection)
+        }
+        
+        // Fetch smart albums containing the asset
+        let smartAlbums = PHAssetCollection.fetchAssetCollectionsContaining(
+            asset,
+            with: .smartAlbum,
+            options: nil
+        )
+        smartAlbums.enumerateObjects { collection, _, _ in
+            albums.append(collection)
+        }
+        
+        return albums
+    }
+    
+    // MARK: - Asset Deletion
+    
+    func deleteAssets(_ assets: [PHAsset]) async throws {
+        try await PHPhotoLibrary.shared().performChanges {
+            PHAssetChangeRequest.deleteAssets(assets as NSArray)
+        }
+    }
+    
+    func deleteAsset(_ asset: PHAsset) async throws {
+        try await deleteAssets([asset])
+    }
+    
     // MARK: - Utility
     
     func formatBytes(_ bytes: Int64) -> String {

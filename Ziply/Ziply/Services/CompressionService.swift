@@ -10,10 +10,10 @@ class CompressionService: ObservableObject {
     static let shared = CompressionService()
     
     // Compression settings
-    private let maxDimension: CGFloat = 1500
-    private let compressionQuality: CGFloat = 0.8 // 80% quality
-    
-    private init() {}
+  private let maxDimension: CGFloat = 100
+  private let compressionQuality: CGFloat = 0.1  // 80% quality
+
+  private init() {}
     
     // MARK: - Public Methods
     
@@ -122,32 +122,62 @@ class CompressionService: ObservableObject {
         return asset
     }
     
-    /// Check if an asset has already been compressed
-    func isAssetCompressed(_ asset: PHAsset, in album: PHAssetCollection?) async -> Bool {
-        guard let album = album else { return false }
+    /// Replace original image with compressed version
+    func replaceOriginalWithCompressed(_ result: CompressedImageResult) async throws -> PHAsset {
+        let photoLibraryService = PhotoLibraryService.shared
         
-        // Get the creation date of the original asset
-        guard let creationDate = asset.creationDate else { return false }
+        // Get all albums containing the original asset
+        let albums = photoLibraryService.getAlbumsContaining(asset: result.asset)
         
-        // Fetch assets in the compressed album
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        var localIdentifier: String?
         
-        let assets = PHAsset.fetchAssets(in: album, options: fetchOptions)
-        var isCompressed = false
-        
-        assets.enumerateObjects { compressedAsset, _, stop in
-            // Check if there's a compressed asset with similar creation date
-            // (within 1 second tolerance for metadata differences)
-            if let compressedDate = compressedAsset.creationDate,
-               abs(creationDate.timeIntervalSince(compressedDate)) < 1.0 {
-                isCompressed = true
-                stop.pointee = true
+        // Perform all changes in a single transaction for atomicity
+        try await PHPhotoLibrary.shared().performChanges {
+            // Create the new compressed asset
+            let creationRequest = PHAssetCreationRequest.forAsset()
+            
+            // Add image data with original metadata
+            let resourceOptions = PHAssetResourceCreationOptions()
+            if let creationDate = result.asset.creationDate {
+                resourceOptions.uniformTypeIdentifier = UTType.jpeg.identifier
+                resourceOptions.originalFilename = "IMG_\(Int(creationDate.timeIntervalSince1970)).jpg"
             }
+            
+            creationRequest.addResource(with: .photo, data: result.compressedData, options: resourceOptions)
+            
+            // Copy important properties from original
+            creationRequest.creationDate = result.asset.creationDate
+            creationRequest.location = result.asset.location
+            creationRequest.isFavorite = result.asset.isFavorite
+            
+            // Add to all albums that contained the original
+            if let placeholder = creationRequest.placeholderForCreatedAsset {
+                for album in albums {
+                    if let albumChangeRequest = PHAssetCollectionChangeRequest(for: album) {
+                        albumChangeRequest.addAssets([placeholder] as NSArray)
+                    }
+                }
+                
+                localIdentifier = placeholder.localIdentifier
+            }
+            
+            // Delete the original asset
+            PHAssetChangeRequest.deleteAssets([result.asset] as NSArray)
         }
         
-        return isCompressed
+        // Fetch the created asset
+        guard let identifier = localIdentifier else {
+            throw CompressionError.saveFailed
+        }
+        
+        let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil)
+        guard let newAsset = fetchResult.firstObject else {
+            throw CompressionError.saveFailed
+        }
+        
+        return newAsset
     }
+    
     
     // MARK: - Private Methods
     

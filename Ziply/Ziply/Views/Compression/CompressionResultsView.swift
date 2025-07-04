@@ -36,7 +36,7 @@ struct CompressionResultsView: View {
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                             
-                            Text("Your photos have been compressed")
+                            Text("Your photos have been compressed and replaced")
                                 .font(.body)
                                 .foregroundColor(.secondary)
                         }
