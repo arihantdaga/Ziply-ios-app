@@ -58,18 +58,6 @@ Instead of deleting originals immediately:
   <img src="./Screenshots/Screen_3.png" width="250" alt="Results Screen"/>
 </p>
 
-<details>
-<summary>View Complete App Flow</summary>
-
-| Screen | Description |
-|--------|-------------|
-| ![Onboarding]([placeholder-onboarding]) | Grant photo access with one tap |
-| ![Selection]([placeholder-selection]) | Choose photos with smart filters |
-| ![Preview]([placeholder-preview]) | See savings before compressing |
-| ![Progress]([placeholder-progress]) | Real-time compression tracking |
-| ![Results]([placeholder-results]) | Celebrate your freed space! |
-
-</details>
 
 ## 🚀 Getting Started
 
@@ -238,25 +226,6 @@ xcodebuild docbuild -scheme Ziply
 - Find photos in "Can Delete - Ziply" album
 - Select and delete when ready
 
-## 🚀 Roadmap
-
-### Version 1.0 (Current)
-- ✅ Core compression engine
-- ✅ Smart photo selection
-- ✅ Batch processing
-- ✅ Safe replacement workflow
-
-### Version 1.1 (Planned)
-- 📅 Compression profiles
-- 📅 Detailed compression stats
-- 📅 Undo functionality
-- 📅 Widget support
-
-### Version 2.0 (Future)
-- 🔮 Machine learning suggestions
-- 🔮 Cloud photo support
-- 🔮 Video compression
-- 🔮 Automation shortcuts
 
 ## 🤝 Contributing
 
@@ -278,19 +247,10 @@ We welcome contributions! Here's how you can help:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-Special thanks to:
-- The iOS development community
-- Contributors and testers
-- Everyone dealing with storage issues
-
 ---
 
 <p align="center">
   <b>Made with ♥ by developers who ran out of storage</b>
   <br>
-  <a href="https://github.com/yourusername/ziply-ios">Star us on GitHub</a> • 
-  <a href="https://twitter.com/ziplyphoto">Follow on Twitter</a> • 
-  <a href="mailto:support@ziplyapp.com">Contact Support</a>
+  <a href="https://github.com/arihantdaga/ziply-ios">Star us on GitHub</a> • 
 </p>
