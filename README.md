@@ -80,6 +80,29 @@ open Ziply.xcodeproj
 
 ## 🔧 Development
 
+### Configuration
+
+#### Compression Settings
+
+You can customize the compression settings by modifying the constants in `Ziply/Utilities/Constants.swift`:
+
+```swift
+enum Compression {
+    /// Maximum dimension (width or height) for compressed images
+    /// Default: 1500 pixels
+    static let maxDimension: CGFloat = 1500
+    
+    /// JPEG compression quality (0.0 to 1.0)
+    /// Default: 0.75 (75% quality)
+    static let compressionQuality: CGFloat = 0.75
+}
+```
+
+**Tips for adjusting settings:**
+- **Lower `maxDimension`** (e.g., 1200 or 1000) for more aggressive size reduction
+- **Higher `compressionQuality`** (e.g., 0.8-0.9) for better quality but larger files
+- **Lower `compressionQuality`** (e.g., 0.6-0.7) for smaller files but more compression artifacts
+
 ### Key Components
 
 **PhotoLibraryService** - Handles all photo library interactions
@@ -88,8 +111,8 @@ open Ziply.xcodeproj
 - Album organization
 
 **CompressionService** - The compression engine
-- Intelligent resizing (max 1500px)
-- JPEG optimization (75-80% quality)
+- Intelligent resizing (configurable max dimension)
+- JPEG optimization (configurable quality)
 - Metadata preservation
 
 **Storage Calculator** - Space analytics

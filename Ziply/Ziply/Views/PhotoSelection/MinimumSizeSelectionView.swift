@@ -39,7 +39,7 @@ struct MinimumSizeSelectionView: View {
                 
                 Slider(
                     value: $appState.photoSelectionViewModel.minimumPhotoSize,
-                    in: 0.1...5.0,
+                    in: Constants.PhotoSelection.minimumSizeRangeMB,
                     step: 0.1
                 )
                 .accentColor(.blue)

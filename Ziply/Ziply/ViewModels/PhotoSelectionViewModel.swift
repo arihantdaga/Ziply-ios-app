@@ -39,7 +39,7 @@ class PhotoSelectionViewModel: ObservableObject {
     @Published var selectedDateRange: DateRangeOption = .lastMonth
     @Published var customStartDate = Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date()
     @Published var customEndDate = Date()
-    @Published var minimumPhotoSize: Float = 2.5 // MB
+    @Published var minimumPhotoSize: Float = Constants.PhotoSelection.defaultMinimumPhotoSizeMB // MB
     @Published var isSearching = false
     @Published var photosFound = 0
     @Published var totalSize: Int64 = 0
@@ -146,7 +146,7 @@ class PhotoSelectionViewModel: ObservableObject {
                     print("PhotoSelectionViewModel - Updated: photosFound=\(photosFound), totalSize=\(runningSize)")
                     
                     // Small delay to make the counting visible
-                    try? await Task.sleep(nanoseconds: 10_000_000) // 10ms
+                    try? await Task.sleep(nanoseconds: Constants.Performance.progressUpdateDelay)
                 }
             }
             

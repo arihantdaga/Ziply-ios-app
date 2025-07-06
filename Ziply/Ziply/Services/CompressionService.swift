@@ -9,11 +9,7 @@ import UniformTypeIdentifiers
 class CompressionService: ObservableObject {
     static let shared = CompressionService()
     
-    // Compression settings
-  private let maxDimension: CGFloat = 100
-  private let compressionQuality: CGFloat = 0.1  // 80% quality
-
-  private init() {}
+    private init() {}
     
     // MARK: - Public Methods
     
@@ -200,7 +196,7 @@ class CompressionService: ObservableObject {
     }
     
     private func getOrCreateCanDeleteAlbum() async -> PHAssetCollection? {
-        let albumName = "Can Delete - Ziply"
+        let albumName = Constants.Albums.canDeleteAlbumName
         
         // Try to find existing album
         let fetchOptions = PHFetchOptions()
@@ -268,7 +264,7 @@ class CompressionService: ObservableObject {
         let size = image.size
         
         // Check if resize is needed
-        if size.width <= maxDimension && size.height <= maxDimension {
+        if size.width <= Constants.Compression.maxDimension && size.height <= Constants.Compression.maxDimension {
             return image
         }
         
@@ -277,9 +273,9 @@ class CompressionService: ObservableObject {
         var newSize: CGSize
         
         if size.width > size.height {
-            newSize = CGSize(width: maxDimension, height: maxDimension / aspectRatio)
+            newSize = CGSize(width: Constants.Compression.maxDimension, height: Constants.Compression.maxDimension / aspectRatio)
         } else {
-            newSize = CGSize(width: maxDimension * aspectRatio, height: maxDimension)
+            newSize = CGSize(width: Constants.Compression.maxDimension * aspectRatio, height: Constants.Compression.maxDimension)
         }
         
         // Create renderer with new size
@@ -313,7 +309,7 @@ class CompressionService: ObservableObject {
         
         // Prepare options with compression quality
         var options: [String: Any] = [
-            kCGImageDestinationLossyCompressionQuality as String: compressionQuality
+            kCGImageDestinationLossyCompressionQuality as String: Constants.Compression.compressionQuality
         ]
         
         // Add metadata if available
@@ -338,7 +334,7 @@ class CompressionService: ObservableObject {
         let sizeScore = Float(compressedPixels / originalPixels)
         
         // Assume compression quality contributes to the score
-        let qualityScore = Float(compressionQuality)
+        let qualityScore = Float(Constants.Compression.compressionQuality)
         
         // Weighted average
         return (sizeScore * 0.3 + qualityScore * 0.7)
