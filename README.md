@@ -53,9 +53,9 @@ Instead of deleting originals immediately:
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="[placeholder-screenshot-1]" width="250" alt="Photo Selection Screen"/>
-  <img src="[placeholder-screenshot-2]" width="250" alt="Compression Progress"/>
-  <img src="[placeholder-screenshot-3]" width="250" alt="Results Screen"/>
+  <img src="./Screenshots/Screen_1.png" width="250" alt="Photo Selection Screen"/>
+  <img src="./Screenshots/Screen_2.png" width="250" alt="Compression Progress"/>
+  <img src="./Screenshots/Screen_3.png" width="250" alt="Results Screen"/>
 </p>
 
 <details>
