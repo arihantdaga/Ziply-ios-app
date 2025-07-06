@@ -1,0 +1,60 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="zipGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="photoGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#C084FC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B5CF6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main Logo Shape - Abstract Photo/Zipper Hybrid -->
+  <!-- Left Side - Unzipped/Original -->
+  <path d="M 60 50 Q 60 40 70 40 L 90 40 L 90 100 L 70 100 Q 60 100 60 90 Z" 
+        fill="#E9D5FF" opacity="0.3"/>
+  
+  <!-- Right Side - Zipped/Compressed -->
+  <path d="M 110 40 L 130 40 Q 140 40 140 50 L 140 90 Q 140 100 130 100 L 110 100 Z" 
+        fill="url(#photoGradient)" opacity="0.9"/>
+  
+  <!-- Zipper Teeth Pattern -->
+  <g>
+    <!-- Left teeth -->
+    <rect x="85" y="45" width="8" height="4" fill="#8B5CF6" rx="1"/>
+    <rect x="85" y="54" width="8" height="4" fill="#8B5CF6" rx="1"/>
+    <rect x="85" y="63" width="8" height="4" fill="#8B5CF6" rx="1"/>
+    <rect x="85" y="72" width="8" height="4" fill="#8B5CF6" rx="1"/>
+    <rect x="85" y="81" width="8" height="4" fill="#8B5CF6" rx="1"/>
+    <rect x="85" y="90" width="8" height="4" fill="#8B5CF6" rx="1"/>
+    
+    <!-- Right teeth -->
+    <rect x="107" y="45" width="8" height="4" fill="#6366F1" rx="1"/>
+    <rect x="107" y="54" width="8" height="4" fill="#6366F1" rx="1"/>
+    <rect x="107" y="63" width="8" height="4" fill="#6366F1" rx="1"/>
+    <rect x="107" y="72" width="8" height="4" fill="#6366F1" rx="1"/>
+    <rect x="107" y="81" width="8" height="4" fill="#6366F1" rx="1"/>
+    <rect x="107" y="90" width="8" height="4" fill="#6366F1" rx="1"/>
+  </g>
+  
+  <!-- Zipper Slider -->
+  <rect x="93" y="100" width="14" height="20" rx="3" fill="url(#zipGradient)"/>
+  <rect x="97" y="105" width="6" height="10" rx="1" fill="white" opacity="0.8"/>
+  
+  <!-- Compression Indicator - Inward Arrows -->
+  <path d="M 45 70 L 55 70 L 50 75 Z" fill="#8B5CF6" opacity="0.6"/>
+  <path d="M 155 70 L 145 70 L 150 75 Z" fill="#6366F1" opacity="0.6"/>
+  
+  <!-- Photo Elements Inside -->
+  <!-- Mountains on compressed side -->
+  <path d="M 115 85 L 120 75 L 125 80 L 130 70 L 135 85 L 135 92 Q 135 95 132 95 L 118 95 Q 115 95 115 92 Z" 
+        fill="white" opacity="0.3"/>
+  <!-- Sun -->
+  <circle cx="120" cy="55" r="4" fill="white" opacity="0.4"/>
+  
+  <!-- Bottom Text Area -->
+  <text x="100" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="url(#zipGradient)">Ziply</text>
+  <text x="100" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#8B5CF6" opacity="0.8">compress with ease</text>
+</svg>

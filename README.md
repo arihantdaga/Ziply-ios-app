@@ -1,7 +1,7 @@
 # Ziply - Smart Photo Compression for iOS
 
 <p align="center">
-  <img src="[placeholder-app-icon]" width="120" height="120" alt="Ziply App Icon"/>
+  <img src="./Assets/ziply-logo.svg" width="120" height="120" alt="Ziply App Icon"/>
   <br>
   <i>Reclaim your storage without losing your memories</i>
 </p>
