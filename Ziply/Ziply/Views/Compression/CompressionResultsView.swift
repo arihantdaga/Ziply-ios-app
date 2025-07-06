@@ -110,7 +110,7 @@ struct CompressionResultsView: View {
                         }
                         .padding(.horizontal)
                         
-                        // Hidden Originals Info
+                        // Can Delete Album Info
                         VStack(spacing: 16) {
                             HStack(spacing: 12) {
                                 Image(systemName: "info.circle.fill")
@@ -118,10 +118,10 @@ struct CompressionResultsView: View {
                                     .font(.title2)
                                 
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("Original Photos Hidden")
+                                    Text("Ready to Delete Originals")
                                         .font(.headline)
                                     
-                                    Text("Your original photos have been hidden to save space. You can find them in the Hidden album in Photos app and delete them manually when you're ready.")
+                                    Text("Original photos have been added to the \"Can Delete - Ziply\" album. You can safely delete these photos manually when you're ready to free up the space.")
                                         .font(.subheadline)
                                         .foregroundColor(.secondary)
                                         .fixedSize(horizontal: false, vertical: true)
@@ -131,7 +131,7 @@ struct CompressionResultsView: View {
                             }
                             
                             Button(action: openPhotosApp) {
-                                Label("View Hidden Album", systemImage: "photo.on.rectangle")
+                                Label("Open Photos App", systemImage: "photo.on.rectangle")
                                     .font(.subheadline)
                                     .foregroundColor(.blue)
                             }

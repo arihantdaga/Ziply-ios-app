@@ -122,7 +122,7 @@ class CompressionService: ObservableObject {
         return asset
     }
     
-    /// Replace original image with compressed version (hides original instead of deleting)
+    /// Replace original image with compressed version and mark original as deletable
     func replaceOriginalWithCompressed(_ result: CompressedImageResult) async throws -> PHAsset {
         let photoLibraryService = PhotoLibraryService.shared
         
@@ -130,6 +130,9 @@ class CompressionService: ObservableObject {
         let albums = photoLibraryService.getAlbumsContaining(asset: result.asset)
         
         var localIdentifier: String?
+        
+        // Get or create "Can Delete" album
+        let canDeleteAlbum = await getOrCreateCanDeleteAlbum()
         
         // Perform all changes in a single transaction for atomicity
         try await PHPhotoLibrary.shared().performChanges {
@@ -161,9 +164,26 @@ class CompressionService: ObservableObject {
                 localIdentifier = placeholder.localIdentifier
             }
             
-            // Hide the original asset instead of deleting
-            let changeRequest = PHAssetChangeRequest(for: result.asset)
-            changeRequest.isHidden = true
+            // Add original to "Can Delete" album if not already there
+            if let canDeleteAlbum = canDeleteAlbum {
+                // Check if asset is already in the album
+                let fetchOptions = PHFetchOptions()
+                let assetsInAlbum = PHAsset.fetchAssets(in: canDeleteAlbum, options: fetchOptions)
+                var isAlreadyInAlbum = false
+                
+                assetsInAlbum.enumerateObjects { existingAsset, _, stop in
+                    if existingAsset.localIdentifier == result.asset.localIdentifier {
+                        isAlreadyInAlbum = true
+                        stop.pointee = true
+                    }
+                }
+                
+                if !isAlreadyInAlbum {
+                    if let albumChangeRequest = PHAssetCollectionChangeRequest(for: canDeleteAlbum) {
+                        albumChangeRequest.addAssets([result.asset] as NSArray)
+                    }
+                }
+            }
         }
         
         // Fetch the created asset
@@ -177,6 +197,22 @@ class CompressionService: ObservableObject {
         }
         
         return newAsset
+    }
+    
+    private func getOrCreateCanDeleteAlbum() async -> PHAssetCollection? {
+        let albumName = "Can Delete - Ziply"
+        
+        // Try to find existing album
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title = %@", albumName)
+        let collections = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
+        
+        if let existingAlbum = collections.firstObject {
+            return existingAlbum
+        }
+        
+        // Create new album
+        return await PhotoLibraryService.shared.createAlbum(name: albumName)
     }
     
     
